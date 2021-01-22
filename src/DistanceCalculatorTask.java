@@ -1,52 +1,41 @@
-import java.util.ArrayList;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
+import java.util.concurrent.CountDownLatch;
 
-public class DistanceCalculatorTask implements Callable<Short> {
+public class DistanceCalculatorTask implements Runnable{
 
     private final int myRow;
     private final int myCol;
     private final String str1;
     private final String str2;
-    private final ArrayList<Future<Short>> d;
+    private final short[][] d;
+    private final CountDownLatch[][] latches;
 
-    public DistanceCalculatorTask(int myRow, int myCol, String str1, String str2, ArrayList<Future<Short>> d) {
+    public DistanceCalculatorTask(int myRow, int myCol, String str1, String str2, short[][] d, CountDownLatch[][] latches) {
         this.myRow = myRow;
         this.myCol = myCol;
         this.str1 = str1;
         this.str2 = str2;
         this.d = d;
+        this.latches = latches;
     }
 
     @Override
-    public Short call() throws ExecutionException, InterruptedException {
-
-        int rowPrev;
-        int colPrev;
-        int rowColPrev = 0;
-
-        if (myRow != 0)
-            colPrev = d.get((myRow - 1) * str2.length() + myCol).get();
-        else {
-            rowColPrev = myCol;
-            colPrev = myCol + 1;
+    public void run() {
+        try {
+            latches[myRow - 1][myCol].await();
+            latches[myRow][myCol - 1].await();
+            latches[myRow - 1][myCol - 1].await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
-        if (myCol != 0)
-            rowPrev = d.get(myRow * str2.length() + (myCol - 1)).get();
-        else {
-            rowColPrev = myRow;
-            rowPrev = myRow + 1;
-        }
-        if (myCol != 0 && myRow != 0)
-            rowColPrev = d.get((myRow - 1) * str2.length() + (myCol - 1)).get();
 
         short cost;
-        if (str1.charAt(myRow) == str2.charAt(myCol))
+        if (str1.charAt(myRow - 1) == str2.charAt(myCol - 1))
             cost = 0;
         else
             cost = 1;
+        d[myRow][myCol] = (short) Math.min(d[myRow - 1][myCol] + 1, Math.min(d[myRow][myCol - 1] + 1, d[myRow - 1][myCol - 1] + cost));
 
-        return (short) Math.min(colPrev + 1, Math.min(rowPrev + 1, rowColPrev + cost));
+        latches[myRow][myCol].countDown();
+
     }
 }
