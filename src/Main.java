@@ -1,5 +1,3 @@
-import java.lang.instrument.Instrumentation;
-import java.nio.charset.StandardCharsets;
 import java.util.Random;
 
 public class Main {
@@ -9,30 +7,33 @@ public class Main {
 
         int leftLimit = 97; // letter 'a'
         int rightLimit = 122; // letter 'z'
-        int targetStringLength = 1000;
+        int stringLengthA = 32041;
+        int stringLengthB = 30137;
         Random random = new Random();
 
         String a = random.ints(leftLimit, rightLimit + 1)
-                .limit(targetStringLength)
+                .limit(stringLengthA)
                 .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
                 .toString();
         String b = random.ints(leftLimit, rightLimit + 1)
-                .limit(targetStringLength)
+                .limit(stringLengthB)
                 .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
                 .toString();
 
 
         long startTime = System.nanoTime();
-        System.out.println(LevenshteinDistance.parallelAlgorithm(a, b));
+        short parallelResult = LevenshteinDistance.parallelAlgorithm(a, b);
         long endTime = System.nanoTime();
         long timeElapsed = (endTime - startTime) / 1000000 ;
-        System.out.println("Execution time in ms : " + timeElapsed );
+        System.out.println("Parallel edit distance result: " + parallelResult);
+        System.out.println("Parallel execution time in ms: " + timeElapsed);
 
         startTime = System.nanoTime();
-        System.out.println(LevenshteinDistance.sequentialAlgorithm(a, b));
+        short sequentialResult = LevenshteinDistance.sequentialAlgorithm(a, b);
         endTime = System.nanoTime();
         timeElapsed = (endTime - startTime) / 1000000 ;
-        System.out.println("Execution time in ms : " + timeElapsed );
+        System.out.println("Sequential edit distance result: " + sequentialResult);
+        System.out.println("Sequential execution time in ms : " + timeElapsed );
     }
 
 }
