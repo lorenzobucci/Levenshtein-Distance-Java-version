@@ -1,11 +1,12 @@
 import java.lang.instrument.Instrumentation;
 import java.nio.charset.StandardCharsets;
 import java.util.Random;
+import java.util.concurrent.ExecutionException;
 
 public class Main {
 
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) throws InterruptedException, ExecutionException {
 
         int leftLimit = 97; // letter 'a'
         int rightLimit = 122; // letter 'z'
