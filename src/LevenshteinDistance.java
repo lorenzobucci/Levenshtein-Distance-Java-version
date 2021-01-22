@@ -28,9 +28,7 @@ public class LevenshteinDistance {
         return d[str1.length()][str2.length()];
     }
 
-    static short parallelAlgorithm(String str1, String str2) throws InterruptedException {
-
-        short subMatrixSize = 500;
+    static short parallelAlgorithm(String str1, String str2, short subMatrixSize) throws InterruptedException {
 
         short[][] d = new short[str1.length() + 1][str2.length() + 1];
         CountDownLatch[][] latches = new CountDownLatch[(str1.length() / subMatrixSize) + 1][(str2.length() / subMatrixSize) + 1];

@@ -20,20 +20,25 @@ public class Main {
                 .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
                 .toString();
 
-
         long startTime = System.nanoTime();
-        short parallelResult = LevenshteinDistance.parallelAlgorithm(a, b);
-        long endTime = System.nanoTime();
-        long timeElapsed = (endTime - startTime) / 1000000 ;
-        System.out.println("Parallel edit distance result: " + parallelResult);
-        System.out.println("Parallel execution time in ms: " + timeElapsed);
-
-        startTime = System.nanoTime();
         short sequentialResult = LevenshteinDistance.sequentialAlgorithm(a, b);
-        endTime = System.nanoTime();
-        timeElapsed = (endTime - startTime) / 1000000 ;
+        long endTime = System.nanoTime();
+        long timeElapsed = (endTime - startTime) / 1000000;
         System.out.println("Sequential edit distance result: " + sequentialResult);
-        System.out.println("Sequential execution time in ms : " + timeElapsed );
+        System.out.println("Sequential execution time in ms : " + timeElapsed);
+
+
+        for (int i = 10; i <= 1000; i+=100) {
+            startTime = System.nanoTime();
+            short parallelResult = LevenshteinDistance.parallelAlgorithm(a, b, (short) i);
+            endTime = System.nanoTime();
+            timeElapsed = (endTime - startTime) / 1000000;
+            System.out.println();
+            System.out.println("Parallel edit distance result: " + parallelResult);
+            System.out.println("Parallel execution time in ms: " + timeElapsed + " with sub-matrices size: " + i);
+        }
+
+
     }
 
 }
