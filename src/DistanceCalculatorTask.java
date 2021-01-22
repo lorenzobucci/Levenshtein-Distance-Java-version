@@ -6,10 +6,10 @@ public class DistanceCalculatorTask implements Runnable{
     private final int myCol;
     private final String str1;
     private final String str2;
-    private final int[][] d;
+    private final short[][] d;
     private final CountDownLatch[][] latches;
 
-    public DistanceCalculatorTask(int myRow, int myCol, String str1, String str2, int[][] d, CountDownLatch[][] latches) {
+    public DistanceCalculatorTask(int myRow, int myCol, String str1, String str2, short[][] d, CountDownLatch[][] latches) {
         this.myRow = myRow;
         this.myCol = myCol;
         this.str1 = str1;
@@ -28,12 +28,12 @@ public class DistanceCalculatorTask implements Runnable{
             e.printStackTrace();
         }
 
-        int cost;
+        short cost;
         if (str1.charAt(myRow - 1) == str2.charAt(myCol - 1))
             cost = 0;
         else
             cost = 1;
-        d[myRow][myCol] = Math.min(d[myRow - 1][myCol] + 1, Math.min(d[myRow][myCol - 1] + 1, d[myRow - 1][myCol - 1] + cost));
+        d[myRow][myCol] = (short) Math.min(d[myRow - 1][myCol] + 1, Math.min(d[myRow][myCol - 1] + 1, d[myRow - 1][myCol - 1] + cost));
 
         latches[myRow][myCol].countDown();
 
